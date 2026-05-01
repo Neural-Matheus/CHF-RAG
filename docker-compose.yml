@@ -1,0 +1,78 @@
+services:
+  chf-rag:
+    build: .
+    image: chf-rag:latest
+    container_name: chf_rag
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=0
+      - CUDA_VISIBLE_DEVICES=0
+      - HF_HOME=/app/.cache/huggingface
+    volumes:
+      - ./outputs:/app/outputs
+      - hf_cache:/app/.cache/huggingface
+    command: python scripts/run_coupled_heatflow.py
+  hybrid-rerank:
+    build: .
+    image: chf-rag:latest
+    container_name: chf_hybrid_rerank
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=0
+      - CUDA_VISIBLE_DEVICES=0
+      - HF_HOME=/app/.cache/huggingface
+    volumes:
+      - ./outputs:/app/outputs
+      - hf_cache:/app/.cache/huggingface
+    command: python scripts/run_hybrid_rerank.py
+    depends_on:
+      chf-rag:
+        condition: service_completed_successfully
+
+
+  stats:
+    build: .
+    image: chf-rag:latest
+    container_name: chf_stats
+    environment:
+      - HF_HOME=/app/.cache/huggingface
+    volumes:
+      - ./outputs:/app/outputs
+      - hf_cache:/app/.cache/huggingface
+    command: python scripts/run_statistical_tests.py
+    depends_on:
+      hybrid-rerank:
+        condition: service_completed_successfully
+
+
+  xai:
+    build: .
+    image: chf-rag:latest
+    container_name: chf_xai
+    environment:
+      - HF_HOME=/app/.cache/huggingface
+    volumes:
+      - ./outputs:/app/outputs
+      - hf_cache:/app/.cache/huggingface
+    command: python scripts/run_xai_analysis.py
+    depends_on:
+      chf-rag:
+        condition: service_completed_successfully
+
+
+  reanalyze:
+    build: .
+    image: chf-rag:latest
+    container_name: chf_reanalyze
+    environment:
+      - HF_HOME=/app/.cache/huggingface
+    volumes:
+      - ./outputs:/app/outputs
+      - hf_cache:/app/.cache/huggingface
+    command: python scripts/reanalyze_stratification.py
+    depends_on:
+      chf-rag:
+        condition: service_completed_successfully
+
+volumes:
+  hf_cache:
