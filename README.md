@@ -1,8 +1,6 @@
 
 
-Reference implementation accompanying the paper *Coupled Heat-Flow RAG: A
-Multiplex Diffusion with Auditable Thermodynamic Time for Brazilian
-Tax Law Retrieval*.
+Reference implementation accompanying the paper *CHF-RAG: Coupled Heat-Flow Retrieval-Augmented Generation for Legal Document Retrieval*.
 
 CHF-RAG models document ranking as a continuous heat-diffusion process across
 a multiplex graph of three relevance channels: dense semantic similarity,
