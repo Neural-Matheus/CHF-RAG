@@ -147,10 +147,6 @@ def _welch_t_p_value(a: np.ndarray, b: np.ndarray) -> float:
     se = np.sqrt(var_a / n_a + var_b / n_b)
     if se < 1e-12:
         return 1.0 if abs(float(a.mean()) - float(b.mean())) < 1e-12 else 0.0
-    t_stat = (float(a.mean()) - float(b.mean())) / se
-
-
-
-    from math import erf, sqrt
-    p = 2.0 * (1.0 - 0.5 * (1.0 + erf(abs(t_stat) / sqrt(2.0))))
-    return float(p)
+    # Welch uses a Student distribution with Satterthwaite degrees of freedom.
+    from scipy.stats import ttest_ind
+    return float(ttest_ind(a, b, equal_var=False).pvalue)

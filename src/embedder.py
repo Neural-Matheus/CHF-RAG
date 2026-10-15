@@ -62,7 +62,7 @@ class Embedder:
         logger.info("Carregando embedder '%s' (%s) em %s ...",
                     self.config["label"], self.config["domain"], device)
         self.model = SentenceTransformer(model_name, device=device)
-        self.dim = self.model.get_embedding_dimension()
+        self.dim = self.model.get_sentence_embedding_dimension()
         logger.info("Embedder pronto. Dimensão: %d | Prefixo E5: %s",
                     self.dim, self.use_prefix)
 

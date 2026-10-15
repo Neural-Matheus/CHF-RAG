@@ -32,9 +32,9 @@ from src.hybrid_rerank import (
 )
 
 
-OUTPUT_DIR = Path("/app/outputs/hybrid_rerank")
+OUTPUT_DIR = (Path(__file__).resolve().parents[1] / "outputs/hybrid_rerank")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-EMB_CACHE = Path("/app/outputs/benchmark/embeddings")
+EMB_CACHE = (Path(__file__).resolve().parents[1] / "outputs/benchmark/embeddings")
 
 logging.basicConfig(
     level=logging.INFO,
@@ -186,8 +186,8 @@ def main():
     bm25_rows = evaluate_bm25_pure(bm25, eval_questions, "bm25", k=TOP_K, ks=K_LIST)
     f1_bm25 = np.mean([r["f1_k"] for r in bm25_rows])
     r_bm25 = np.mean([r["recall_k"] for r in bm25_rows])
-    r_bm25_5 = np.mean([r["recall_5"] for r in bm25_rows])
-    r_bm25_20 = np.mean([r["recall_20"] for r in bm25_rows])
+    r_bm25_5 = np.mean([r["recall_at_5"] for r in bm25_rows])
+    r_bm25_20 = np.mean([r["recall_at_20"] for r in bm25_rows])
     logger.info("BM25 puro: F1@10=%.4f | R@5=%.4f R@10=%.4f R@20=%.4f",
                 f1_bm25, r_bm25_5, r_bm25, r_bm25_20)
 
@@ -217,9 +217,9 @@ def main():
             r.pop("xai_explanation", None)
         all_rows.extend(cos_rows)
         f1_cos = np.mean([r["f1_k"] for r in cos_rows])
-        r_cos_5 = np.mean([r["recall_5"] for r in cos_rows])
+        r_cos_5 = np.mean([r["recall_at_5"] for r in cos_rows])
         r_cos = np.mean([r["recall_k"] for r in cos_rows])
-        r_cos_20 = np.mean([r["recall_20"] for r in cos_rows])
+        r_cos_20 = np.mean([r["recall_at_20"] for r in cos_rows])
         logger.info("  F1@10=%.4f | R@5=%.4f R@10=%.4f R@20=%.4f",
                     f1_cos, r_cos_5, r_cos, r_cos_20)
 
@@ -264,9 +264,9 @@ def main():
             chf_rows.append(row)
         all_rows.extend(chf_rows)
         f1_chf = np.mean([r["f1_k"] for r in chf_rows])
-        r_chf_5 = np.mean([r["recall_5"] for r in chf_rows])
+        r_chf_5 = np.mean([r["recall_at_5"] for r in chf_rows])
         r_chf = np.mean([r["recall_k"] for r in chf_rows])
-        r_chf_20 = np.mean([r["recall_20"] for r in chf_rows])
+        r_chf_20 = np.mean([r["recall_at_20"] for r in chf_rows])
         logger.info("  F1@10=%.4f | R@5=%.4f R@10=%.4f R@20=%.4f  (t*_med=%.3f)",
                     f1_chf, r_chf_5, r_chf, r_chf_20, np.median(chf_t_stars))
 
@@ -412,7 +412,7 @@ def main():
         logger.info("\n" + "=" * 78)
         logger.info("RECALL@k em DIFERENTES profundidades")
         logger.info("=" * 78)
-        recall_cols = [f"recall_{kk}" for kk in K_LIST if f"recall_{kk}" in df.columns]
+        recall_cols = [f"recall_at_{kk}" for kk in K_LIST if f"recall_at_{kk}" in df.columns]
         rec_table = summary[["strategy", "embedder"] + recall_cols].copy()
         rec_table = rec_table.sort_values(["embedder", "strategy"])
         logger.info("\n%s", rec_table.to_string(index=False))
@@ -420,7 +420,7 @@ def main():
         logger.info("\n" + "=" * 78)
         logger.info("F1@k em DIFERENTES profundidades")
         logger.info("=" * 78)
-        f1_cols = [f"f1_{kk}" for kk in K_LIST if f"f1_{kk}" in df.columns]
+        f1_cols = [f"f1_at_{kk}" for kk in K_LIST if f"f1_at_{kk}" in df.columns]
         f1_table = summary[["strategy", "embedder"] + f1_cols].copy()
         f1_table = f1_table.sort_values(["embedder", "strategy"])
         logger.info("\n%s", f1_table.to_string(index=False))

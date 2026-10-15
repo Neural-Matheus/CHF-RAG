@@ -171,9 +171,9 @@ def evaluate_with_rerank(
             if ks:
                 for kk in ks:
                     row.update({
-                        f"f1_{kk}": 0.0,
-                        f"precision_{kk}": 0.0,
-                        f"recall_{kk}": 0.0,
+                        f"f1_at_{kk}": 0.0,
+                        f"precision_at_{kk}": 0.0,
+                        f"recall_at_{kk}": 0.0,
                     })
             rows.append(row)
             continue

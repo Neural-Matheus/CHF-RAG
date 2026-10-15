@@ -3,10 +3,10 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 
-OUTPUT_DIR = Path("/app/outputs/xai_analysis")
+OUTPUT_DIR = (Path(__file__).resolve().parents[1] / "outputs/xai_analysis")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-CHF_CSV = Path("/app/outputs/coupled_heatflow/chf_raw.csv")
+CHF_CSV = (Path(__file__).resolve().parents[1] / "outputs/coupled_heatflow/chf_raw.csv")
 
 
 def main():

@@ -16,7 +16,7 @@ _QUESTIONS_URL = f"{_HF_BASE}/questions_QA_2024_v1.1.json"
 _LEGAL_DOCS_URL = f"{_HF_BASE}/referred_legal_documents_QA_2024_v1.1.json"
 
 
-_CACHE_DIR = Path(os.environ.get("HF_HOME", "/app/.cache/huggingface")) / "br_taxqa_r"
+_CACHE_DIR = Path(os.environ.get("HF_HOME", str(Path(__file__).resolve().parents[1] / ".cache/huggingface"))) / "br_taxqa_r"
 
 
 @dataclass

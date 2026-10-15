@@ -224,7 +224,7 @@ def build_hierarchy_laplacian(
                    for lv in unique_levels if lv > 0}
     n_isolated = int((levels == 0).sum())
     logger.info(
-        "L^hier: shape=%s | docs por nível=%s | isolados(nível 0)=%d",
+        "L^hier: shape=%s | docs por nível=%s | documentos de nível 0=%d",
         L.shape, n_per_level, n_isolated,
     )
     return L
@@ -281,6 +281,14 @@ def build_coupled_operator(
     beta_hc: float = 0.1,
     tikhonov: float = 1e-3,
 ) -> CoupledOperator:
+    # The eigensolver and PSD guarantee require an undirected, nonnegative coupling.
+    betas = np.asarray([beta_sc, beta_sh, beta_cs, beta_ch, beta_hs, beta_hc])
+    if not np.all(np.isfinite(betas)) or np.any(betas < 0):
+        raise ValueError("Coupling strengths must be finite and nonnegative")
+    if beta_sc != beta_cs or beta_sh != beta_hs or beta_ch != beta_hc:
+        raise ValueError("Undirected coupling requires symmetric beta pairs")
+    if not np.isfinite(tikhonov) or tikhonov < 0:
+        raise ValueError("Tikhonov regularization must be finite and nonnegative")
     N = L_sem.shape[0]
     assert L_cit.shape == (N, N) and L_hier.shape == (N, N), \
         "Os três Laplacianos precisam ter o mesmo número de nós."

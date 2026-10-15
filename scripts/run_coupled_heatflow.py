@@ -46,9 +46,9 @@ from src.question_typing import (
 )
 
 
-OUTPUT_DIR = Path("/app/outputs/coupled_heatflow")
+OUTPUT_DIR = (Path(__file__).resolve().parents[1] / "outputs/coupled_heatflow")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-EMB_CACHE  = Path("/app/outputs/benchmark/embeddings")
+EMB_CACHE  = (Path(__file__).resolve().parents[1] / "outputs/benchmark/embeddings")
 
 logging.basicConfig(
     level=logging.INFO,

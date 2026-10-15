@@ -198,19 +198,10 @@ def integrate_channel_flow(
 
     Ut_batch = operator.evolve_batch(U0, ts)
     N = operator.N
-    bsc, bsh, bcs, bch, bhs, bhc = operator.betas
-
-    flows_sem = np.zeros((n_steps, N))
-    flows_cit = np.zeros((n_steps, N))
-    flows_hier = np.zeros((n_steps, N))
-
-    for ti in range(n_steps):
-        u_sem  = Ut_batch[ti, :N]
-        u_cit  = Ut_batch[ti, N:2*N]
-        u_hier = Ut_batch[ti, 2*N:]
-        flows_sem[ti]  = -L_sem  @ u_sem  + bsc * (u_cit  - u_sem)  + bsh * (u_hier - u_sem)
-        flows_cit[ti]  = -L_cit  @ u_cit  + bcs * (u_sem  - u_cit)  + bch * (u_hier - u_cit)
-        flows_hier[ti] = -L_hier @ u_hier + bhs * (u_sem  - u_hier) + bhc * (u_cit  - u_hier)
+    derivative = -Ut_batch @ operator.M.T
+    flows_sem = derivative[:, :N]
+    flows_cit = derivative[:, N:2*N]
+    flows_hier = derivative[:, 2*N:]
 
 
     int_sem  = _trapz(np.abs(flows_sem),  ts, axis=0)

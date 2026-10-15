@@ -8,11 +8,11 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
-OUTPUT_DIR = Path("/app/outputs/statistical_tests")
+OUTPUT_DIR = (Path(__file__).resolve().parents[1] / "outputs/statistical_tests")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-CHF_CSV    = Path("/app/outputs/coupled_heatflow/chf_raw.csv")
-HYBRID_CSV = Path("/app/outputs/hybrid_rerank/hybrid_raw.csv")
+CHF_CSV    = (Path(__file__).resolve().parents[1] / "outputs/coupled_heatflow/chf_raw.csv")
+HYBRID_CSV = (Path(__file__).resolve().parents[1] / "outputs/hybrid_rerank/hybrid_raw.csv")
 
 
 def welch_t_test(a: np.ndarray, b: np.ndarray) -> Tuple[float, float]:
